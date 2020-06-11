@@ -31,7 +31,11 @@
 //#define USING_EIGEN_3VECT 1
 
 #if USING_EIGEN_ARRAY
-  #include <Eigen/Dense>
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wshadow"
+    #pragma GCC diagnostic ignored "-Wconversion"
+    #include <Eigen/Dense>
+    #pragma GCC diagnostic pop
 
   typedef Eigen::Matrix<int32_t, Eigen::Dynamic, 1>  int_array;
   typedef Eigen::Matrix<nec_float, Eigen::Dynamic, 1>  real_array;
@@ -49,7 +53,7 @@
 #endif
 
 
-inline void vector_fill(complex_array& x, int32_t start, int32_t N, const nec_complex& y) {
+inline void vector_fill(complex_array& x, int64_t start, int64_t N, const nec_complex& y) {
   x.fill(start, N, y);
 }
 
@@ -184,10 +188,15 @@ inline nec_float normL1(const nec_float x, const nec_float y, const nec_float z)
 
 
 #if USING_EIGEN_3VECT
-  #include <Eigen/Dense>
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wshadow"
+    #pragma GCC diagnostic ignored "-Wconversion"
+    #include <Eigen/Dense>
+    #pragma GCC diagnostic pop
 
-  typedef Eigen::Matrix<nec_float,3,1> nec_3vector;
-  typedef Eigen::Matrix<nec_complex,3,1> nec_c3vector;
+
+    typedef Eigen::Matrix<nec_float,3,1> nec_3vector;
+    typedef Eigen::Matrix<nec_complex,3,1> nec_c3vector;
 #else
 
 /** \brief A Class for handling 3 dimensional vectors */
@@ -200,6 +209,8 @@ public:
     _v[1] = in_y;
     _v[2] = in_z;
   }
+  
+  nec_3vector(const nec_3vector&) = default;
   
   /**!\brief The Euclidian norm */
   inline nec_float norm() const {

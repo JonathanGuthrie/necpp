@@ -19,7 +19,6 @@
 #include "math_util.h"
 
 
-#include "math_util.h"
 #include <string>
 #include <stdio.h>
 
@@ -110,9 +109,11 @@ void c_plot_card::plot_complex(nec_complex x) const
 		case 2:
 			plot_double(real(x));
 			plot_double(imag(x));
+                        break;
 		case 3:
 			plot_double(abs(x));
 			plot_double(arg_degrees(x));
+                        break;
 	}
 }
 

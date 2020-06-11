@@ -1,7 +1,7 @@
-# Installation from CVS
+# Installation from Source
 
-To create the files using autoconf and friends, issue the following 
-command, and then proceed to the Basic Installation.
+If nec2++ isn't available precompiled in your system, here are the instructions for
+building from source code.
 
 ## Pre-requisites
 
@@ -9,7 +9,7 @@ Nec2++ requires a C++ compiler and uses the GNU autoconf packages for
 keeping track of dependencies. On Debian or a derivative, you can
 install these with the following command.
 
-  aptitude install g++ make automake autoconf libtool libatlas-base-dev
+    aptitude install g++ make automake autoconf libtool libatlas-base-dev
 
 ## Installation Steps
 
@@ -23,13 +23,13 @@ install these with the following command.
 
   3. Then do the usual thing 
        ./configure --without-lapack
-       make 
+       make -j 4
        sudo make install
 
   4. To use LAPACK, you should install the appropriate atlas system
      aptitude install libatlas-base-dev. And then to the usual thing, i.e.,
         ./configure 
-        make
+        make -j 4
         sudo make install
 
 ## Compiling for a specific architecture
@@ -58,4 +58,11 @@ command line (cygwin shell is best).
   1. ./configure --host=i586-mingw32msvc
   2. make
   3. The executable nec2++.exe can now be found in the src subdirectory.
+
+### Compiling with Visual Studio 2013
+
+NEC2++ has been tested with Microsoft Visual Studio 2013.
+Step-by-step instructions
+
+* Build the project inside the win32 subdirectory with Visual Studio 2103.
 

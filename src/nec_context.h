@@ -34,11 +34,27 @@
 
 class c_geometry;
 
-enum excitation_return
-{
+enum excitation_return {
     FREQ_PRINT_NORMALIZATION = 0,
     FREQ_LOOP_CONTINUE = 1,
     FREQ_LOOP_CARD_CONTINUE = 2
+};
+
+/**
+ *  1: Memory allocation & Initialization
+    2: Structure segment loading
+    3: Excitation set up (right hand side, -e inc.)
+    4: ?
+    5: Near field calculation
+    6: standard far field calculation
+*/
+enum processing_state {
+    PROCESSING_MEMORY_ALLOC = 1,
+    PROCESSING_STRUCTURE_LOADING = 2,
+    PROCESSING_EXCITATION_SETUP = 3,
+    PROCESSING_EXCITATION_LOOP = 4,
+    PROCESSING_NEAR_FIELD = 5,
+    PROCESSING_FAR_FIELD = 6
 };
 
 /*! \brief Using nec_context
@@ -69,6 +85,35 @@ public:
 
   void calc_prepare();
   
+  void reset_processing_to_structure_loading() {
+      switch (processing_state) {
+          /* If we havent allocated memory, then leave state there. Otherwise set to
+           * structure loading
+           * */
+          case PROCESSING_MEMORY_ALLOC:
+              processing_state = PROCESSING_MEMORY_ALLOC;
+              break;
+          default:
+              processing_state = PROCESSING_STRUCTURE_LOADING;
+      }
+  }
+
+  void reset_processing_to_excitation_setup() {
+      switch (processing_state) {
+          /* If we havent allocated memory, then leave state there. Otherwise set to
+           * structure loading
+           * */
+          case PROCESSING_MEMORY_ALLOC:
+              processing_state = PROCESSING_MEMORY_ALLOC;
+              break;
+          case PROCESSING_STRUCTURE_LOADING:
+              processing_state = PROCESSING_STRUCTURE_LOADING;
+              break;
+          default:
+              processing_state = PROCESSING_EXCITATION_SETUP;
+      }
+  }
+
   inline c_geometry* get_geometry()  {
       return m_geometry;
   }
@@ -438,7 +483,9 @@ public:
         // NOT YET DONE... F7- (A) BLANK, (B) INCIDENT AMPLITUDE (Volts/m)
   \endverbatim
   */
-  void ex_card(enum excitation_type itmp1, int itmp2, int itmp3, int itmp4, nec_float tmp1, nec_float tmp2, nec_float tmp3, nec_float tmp4, nec_float tmp5, nec_float tmp6);
+  void ex_card(enum excitation_type itmp1, int itmp2, int itmp3, int itmp4, nec_float tmp1, nec_float tmp2, nec_float tmp3,         
+                    nec_float tmp4, nec_float tmp5, nec_float tmp6);
+  
 
 
   /*! \brief Specifies the excitation for the structure. The excitation can be voltage sources on the structure, an elementary current source,
@@ -747,7 +794,8 @@ public:
   complex_array cm;  // primary interaction matrix
   
   /* common  /matpar/ */
-  int icase, npblk, nlast;
+  int icase, npblk;
+  int64_t nlast;
   int nbbx, npbx, nlbx, nbbl, npbl, nlbl;
   
   /* common  /save/ */
@@ -861,14 +909,15 @@ private:
     
   
   enum excitation_return
-    excitation_loop(int in_freq_loop_state, int mhz);
+    excitation_loop(enum processing_state in_freq_loop_state, int mhz);
       
   void  setup_excitation();
   
   /* pointers to output files */
   FILE *m_output_fp;
   
-  int inc, processing_state, isave;
+  int inc, isave;
+  enum processing_state processing_state;
   int nthic, nphic;
   int iped;
   
@@ -903,7 +952,7 @@ private:
   void etmns(nec_float p1, nec_float p2, nec_float p3, nec_float p4, nec_float p5,
       nec_float p6, nec_float incident_amplitude, enum excitation_type excite_type, complex_array& e);
 
-  void fblock( int nrow, int ncol, int imax, int ipsym );
+  void fblock( int nrow, int ncol, int64_t imax, int ipsym );
 
   void gf(nec_float zk, nec_float *co, nec_float *si);
   void gh(nec_float zk, nec_float *hr, nec_float *hi);

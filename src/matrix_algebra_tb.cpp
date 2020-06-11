@@ -19,7 +19,7 @@ void matrix_setup(complex_array& A) {
   int n = 4;
   A(0,0) = 3.0;
   A(0,1) =1.0;
-  A(0,2) =-4.0;
+  A(0,2) = -4.0;
   A(0,3) =2.0;
   
   A(1,0) =3.0;
@@ -29,12 +29,12 @@ void matrix_setup(complex_array& A) {
   
   A(2,0) =2.0;
   A(2,1) =13.0;
-  A(2,2) =-1.0;
+  A(2,2) = -1.0;
   A(2,3) =0.0;
   
-  A(3,0) =-2.0;
+  A(3,0) = -2.0;
   A(3,1) =3.0;
-  A(3,2) =-1.0;
+  A(3,2) = -1.0;
   A(3,3) =4.0;
   for (int i = 1; i < n; i++ )  {
     for (int j = 0; j < i; j++ )
@@ -135,7 +135,7 @@ TEST_CASE( "LU Decomposition EIGEN", "[lu_decompose]") {
 
   A(0,0) = 3.0;
   A(0,1) =1.0;
-  A(0,2) =-4.0;
+  A(0,2) = -4.0;
   A(0,3) =2.0;
   
   A(1,0) =3.0;
@@ -145,17 +145,17 @@ TEST_CASE( "LU Decomposition EIGEN", "[lu_decompose]") {
   
   A(2,0) =2.0;
   A(2,1) =13.0;
-  A(2,2) =-1.0;
+  A(2,2) = -1.0;
   A(2,3) =0.0;
   
-  A(3,0) =-2.0;
+  A(3,0) = -2.0;
   A(3,1) =3.0;
-  A(3,2) =-1.0;
+  A(3,2) = -1.0;
   A(3,3) =4.0;
 
   cout << "Here is the matrix A:" << endl << A << endl;
   
-  Eigen::FullPivLU<MatrixXcd> lu(A);
+  Eigen::PartialPivLU<MatrixXcd> lu(A);
   cout << "Here is, up to permutations, its LU decomposition matrix:"
   << endl << lu.matrixLU() << endl;
   cout << "Here is the L part:" << endl;
@@ -166,8 +166,8 @@ TEST_CASE( "LU Decomposition EIGEN", "[lu_decompose]") {
   MatrixXcd u = lu.matrixLU().triangularView<Upper>();
   cout << u << endl;
   cout << "Let us now reconstruct the original matrix m:" << endl;
-  cout << lu.permutationP().inverse() * l * u * lu.permutationQ().inverse() << endl;
-  MatrixXcd B = lu.permutationP().inverse() * l * u * lu.permutationQ().inverse();
+  MatrixXcd B = lu.permutationP().inverse() * l * u;
+  cout << B << endl;
   for (int i=0;i<4;i++) {
     for (int j=0; j<4; j++) {
       REQUIRE_APPROX_EQUAL(B(i,j), A(i,j));

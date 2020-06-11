@@ -41,7 +41,7 @@ libnecpp_la_SOURCES = c_evlcom.cpp c_geometry.cpp c_ggrid.cpp c_plot_card.cpp \
 	libnecpp.h nec_context.h nec_exception.h nec_ground.h nec_output.h \
 	nec_radiation_pattern.h nec_results.h safe_array.h nec_structure_currents.cpp \
 	nec_structure_currents.h electromag.cpp nec_results.cpp 
-libnecpp_la_CXXFLAGS = -O2 -g0 -Wall -Wextra -Wshadow
+libnecpp_la_CXXFLAGS = -O2 -g0 -Wall -Wextra -Wshadow -Wconversion
 
 
 libnecpp_la_LDFLAGS = @LIBLAPACK@ -lm -lstdc++
@@ -50,7 +50,7 @@ nec2___LDFLAGS = -all-static
 # Unit tests
 noinst_PROGRAMS = test_manager
 
-test_manager_SOURCES  = $(libnecpp_la_SOURCES) safe_array_tb.cpp matrix_algebra_tb.cpp c_geometry_tb.cpp c_evlcom_tb.cpp
+test_manager_SOURCES  = $(libnecpp_la_SOURCES) nec_context_tb.cpp safe_array_tb.cpp matrix_algebra_tb.cpp c_geometry_tb.cpp c_evlcom_tb.cpp
 test_manager_CXXFLAGS = -std=c++11 -O0 -g3 -Wall -Wextra -Werror -DNEC_ERROR_CHECK=1
 test_manager_LDADD    = $(libnecpp_la_LIBADD) 
 test_manager_LDFLAGS    = $(libnecpp_la_LDFLAGS) 
